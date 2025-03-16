@@ -1,7 +1,16 @@
 <header class="header_section">
             <div class="container">
                <nav class="navbar navbar-expand-lg custom_nav-container ">
-                  <a class="navbar-brand" href="{{route('front.index')}}"><img width="250" src="{{asset('front_end/images/logo.png')}}" alt="#" /></a>
+
+                  @if(getSettings('logo_image'))
+                     <a class="navbar-brand" href="{{route('front.index')}}">
+                        <img width="120" style="object-fit: cover; border-radius: 50%;" src="{{asset('settings_imgs/'.getSettings('logo_image'))}}" alt="#" /> 
+                     </a>
+                  @else
+                     <img width="250" src="{{asset('front_end/images/logo.png')}}" alt="#" />   
+                  @enderror
+
+
                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class=""> </span>
                   </button>

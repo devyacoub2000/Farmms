@@ -28,5 +28,20 @@ Route::prefix('admin')->name('admin.')->group(function() {
    // Contacts
 
    Route::get('contacts', [ContactController::class, 'contacts'])->name('contacts');
+
+   // Settings 
+   Route::get('settings', [AdminController::class, 'settings'])->name('settings');
+   Route::put('settings', [AdminController::class, 'save_settings'])->name('save_settings');
+
+   Route::get('deleimg-site', [AdminController::class, 'deleimg_site'])->name('deleimg_site');
+
+
+
+
+
+
+
+
+   
 });
 });

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Setting;
 
 class AdminController extends Controller
 {
@@ -57,5 +60,57 @@ class AdminController extends Controller
      public function check_password(Request $request) {
 
          return (Hash::check($request->password, Auth::user()->password));
+    }
+
+    // settings 
+
+    public function settings() {
+        // $data = Setting::select('key', 'value')->get()->toArray();
+        // $emptyArray = [];
+        // foreach ($data as $item) {
+        //     $emptyArray[$item['key']] = $item['value'];
+        // }
+        // $data = $emptyArray;
+
+        $data = Setting::pluck('value', 'key')->toArray();
+        return view('admin.settings', compact('data'));
+    }
+
+    public function save_settings(Request $request) {
+
+        $data = $request->except('_token', '_method', 'logo_image');
+
+        if($request->hasFile('logo_image')) {
+
+            $oldimg = Setting::where('key', 'logo_image')->first();
+            if($oldimg) {
+                 File::delete(public_path('settings_imgs/'.$oldimg['value']));
+            }
+            Artisan::call('cache:clear');
+            $img = $request->File('logo_image');
+            $img_name = rand().time().$img->getClientOriginalName();
+            $img->move(public_path('settings_imgs'), $img_name);
+            $data['logo_image'] = $img_name;
+        }
+
+        foreach ($data as $key => $value) {
+             Setting::updateOrCreate([
+                  'key' => $key,
+             ], [
+
+                  'value' => $value,
+             ]);
+        }
+
+        return redirect()->back()->with('msg', 'Update Setting was Done ...');
+    }
+
+    public function deleimg_site(Request $request) {
+         Artisan::call('cache:clear');
+         Setting::where('key', 'logo_image')->update([
+             'value' => null
+         ]);
+
+         return response()->json(['message' => 'Logo Delete Done']);
     }
 }
