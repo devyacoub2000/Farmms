@@ -28,6 +28,10 @@ Route::prefix('admin')->name('admin.')->group(function() {
    // Contacts
 
    Route::get('contacts', [ContactController::class, 'contacts'])->name('contacts');
+   Route::get('single_contact/{id}', [ContactController::class, 'single_contact'])->name('single_contact');
+   Route::delete('delete_contact/{id}', [ContactController::class, 'delete_contact'])->name('delete_contact');
+
+   Route::post('reply_msg/{id}', [ContactController::class, 'reply_msg'])->name('reply_msg');
 
    // Settings 
    Route::get('settings', [AdminController::class, 'settings'])->name('settings');
